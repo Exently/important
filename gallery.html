@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Galerie • Für dich</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="assets/base.css" />
+    <link rel="stylesheet" href="assets/gallery.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div id="nav" class="nav"></div>
+
+        <div class="card">
+            <div class="row">
+                <select id="type">
+                    <option value="image">Bild (URL)</option>
+                    <option value="link">Link (Embed)</option>
+                </select>
+                <input id="url" placeholder="https:// …" />
+                <input id="title" placeholder="Titel (optional)" />
+                <button id="add">+ Hinzufügen</button>
+            </div>
+        </div>
+
+        <div class="space"></div>
+        <div id="list" class="gallery-list"></div>
+    </div>
+
+    <script type="module">
+        import { mountNav, el } from "./js/common.js";
+        import { storage } from "./js/storage.js";
+        mountNav("gallery");
+
+        async function render() {
+            const data = await storage.load();
+            const root = el("#list");
+            root.innerHTML = "";
+            data.gallery.forEach((g, i) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+          <div class="small">${g.title || ""}</div>
+          ${g.type === "image"
+                        ? `<img class="img" src="${g.url}" alt="${g.title || ""}"/>`
+                        : `<iframe class="embed" src="${g.url}" allowfullscreen></iframe>`}
+          <div class="space"></div>
+          <button data-i="${i}" class="rm">Entfernen</button>
+        `;
+                root.appendChild(card);
+            });
+            root.querySelectorAll(".rm").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    const i = +e.currentTarget.dataset.i;
+                    await storage.save(d => { d.gallery.splice(i, 1); return d; });
+                    render();
+                });
+            });
+        }
+
+        el("#add").addEventListener("click", async () => {
+            const type = el("#type").value;
+            const url = el("#url").value.trim();
+            const title = el("#title").value.trim();
+            if (!url) return;
+            await storage.save(d => {
+                d.gallery.unshift({ type, url, title });
+                return d;
+            });
+            el("#url").value = ""; el("#title").value = "";
+            render();
+        });
+
+        render();
+    </script>
+</body>
+</html>

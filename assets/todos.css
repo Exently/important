@@ -1,0 +1,51 @@
+.todo-list {
+    display: flex;
+    flex-direction: column
+}
+
+#todoText {
+    width: 80%;
+    font-size: 1rem;
+    padding-right: 1rem;
+    color: var(--text);
+    outline: none
+}
+
+.todo {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .6rem;
+    border-bottom: 1px solid var(--bd-soft);
+    background: transparent
+}
+
+.todo.done {
+    opacity: .6;
+    text-decoration: line-through
+}
+
+.kbd {
+    border: 1px solid #c9d2ff;
+    border-radius: 8px;
+    padding: .1rem .45rem;
+    font-size: .8rem;
+    background: #eff2ff;
+    color: #4953a8
+}
+
+.todo input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary)
+}
+
+.todo .rm {
+    background: linear-gradient(90deg, #ff8aa8, #ff5d84)
+}
+
+.add-row {
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap
+}

@@ -1,0 +1,32 @@
+.share-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr
+}
+
+.share-grid .row {
+    display: flex;
+    gap: .6rem;
+    
+    align-items: center
+}
+
+#share,
+#import {
+    flex: 1;
+    padding: .5rem;
+}
+
+#btnReset {
+    background: linear-gradient(90deg, #ff8aa8, #ff5d84);
+    padding: .5rem;
+}
+
+#btnCopy, #btnExport, #btnImport {
+    padding: .5rem;
+    margin: .5rem;
+}
+
+#status {
+    margin-left: .5rem
+}

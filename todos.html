@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <title>To-Dos • Für dich</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="assets/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div id="nav" class="nav"></div>
+
+        <div class="card">
+            <div class="row">
+                <input id="todoText" placeholder="Was machen wir als Nächstes? 🥰" />
+                <button id="add">+ Hinzufügen</button>
+            </div>
+        </div>
+
+        <div class="space"></div>
+        <div id="todos"></div>
+    </div>
+
+    <script type="module">
+        import { mountNav, el } from "./js/common.js";
+        import { storage } from "./js/storage.js";
+        mountNav("todos");
+
+        const list = el("#todos");
+        async function render() {
+            const data = await storage.load();
+            list.innerHTML = "";
+            data.todos.forEach((t, i) => {
+                const row = document.createElement("div");
+                row.className = "todo card " + (t.done ? "done" : "");
+                row.innerHTML = `
+          <input type="checkbox" ${t.done ? "checked" : ""} data-i="${i}" />
+          <div style="flex:1">${t.text}</div>
+          <button class="rm" data-i="${i}">✕</button>
+        `;
+                list.appendChild(row);
+            });
+            list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener("change", async (e) => {
+                    const i = +e.currentTarget.dataset.i;
+                    await storage.save(d => { d.todos[i].done = !d.todos[i].done; return d; });
+                    render();
+                });
+            });
+            list.querySelectorAll(".rm").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    const i = +e.currentTarget.dataset.i;
+                    await storage.save(d => { d.todos.splice(i, 1); return d; });
+                    render();
+                });
+            });
+        }
+
+        async function add() {
+            const input = el("#todoText");
+            const text = input.value.trim();
+            if (!text) return;
+            await storage.save(d => {
+                d.todos.unshift({ id: crypto.randomUUID(), text, done: false });
+                return d;
+            });
+            input.value = "";
+            render();
+        }
+
+        el("#add").addEventListener("click", add);
+        el("#todoText").addEventListener("keydown", (e) => { if (e.key === "Enter") add(); });
+
+        render();
+    </script>
+</body>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/todos.css" />
+
+</html>

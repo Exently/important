@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Gutscheine • Für dich</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="assets/base.css" />
+    <link rel="stylesheet" href="assets/coupons.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div id="nav" class="nav"></div>
+
+        <div class="card">
+            <div class="row">
+                <input id="couponText" placeholder="Neuer Gutschein (z.B. ??? …)" />
+                <button id="add">+ Hinzufügen</button>
+            </div>
+            <div class="small">Verfügbar: <span id="availN">0</span> • Verbraucht: <span id="usedN">0</span></div>
+        </div>
+
+        <div class="space"></div>
+
+        <div class="card">
+            <button id="draw">🎁 Zufälligen Gutschein ziehen</button>
+            <div class="space"></div>
+            <div id="result" class="counter" style="min-height:2.2em"></div>
+        </div>
+
+        <div class="space"></div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="badge">Verfügbar</div>
+                <div id="avail"></div>
+            </div>
+            <div class="card">
+                <div class="badge">Verbraucht</div>
+                <div id="used"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { mountNav, el } from "./js/common.js";
+        import { storage } from "./js/storage.js";
+        mountNav("coupons");
+
+        const result = el("#result");
+        const availBox = el("#avail");
+        const usedBox = el("#used");
+
+        function pill(text, cls = "") {
+            const d = document.createElement("div");
+            d.className = "row";
+            d.style.margin = ".3rem 0";
+            d.innerHTML = `<div class="card" style="padding:.4rem .7rem">${text}</div>`;
+            if (cls) d.classList.add(cls);
+            return d;
+        }
+
+        async function render() {
+            const { coupons } = await storage.load();
+            el("#availN").textContent = coupons.available.length;
+            el("#usedN").textContent = coupons.used.length;
+
+            availBox.innerHTML = ""; usedBox.innerHTML = "";
+            coupons.available.forEach((c, i) => {
+                const row = pill(c);
+                const useBtn = document.createElement("button");
+                useBtn.textContent = "Markieren als benutzt";
+                useBtn.style.marginLeft = ".5rem";
+                useBtn.addEventListener("click", async () => {
+                    await storage.save(d => {
+                        const item = d.coupons.available.splice(i, 1)[0];
+                        d.coupons.used.unshift(item);
+                        return d;
+                    });
+                    render();
+                });
+                row.appendChild(useBtn);
+                availBox.appendChild(row);
+            });
+            coupons.used.forEach((c, i) => {
+                const row = pill(c);
+                const undo = document.createElement("button");
+                undo.textContent = "Wieder verfügbar";
+                undo.style.marginLeft = ".5rem";
+                undo.addEventListener("click", async () => {
+                    await storage.save(d => {
+                        const item = d.coupons.used.splice(i, 1)[0];
+                        d.coupons.available.unshift(item);
+                        return d;
+                    });
+                    render();
+                });
+                usedBox.appendChild(row);
+                row.appendChild(undo);
+            });
+        }
+
+        el("#add").addEventListener("click", async () => {
+            const input = el("#couponText");
+            const text = input.value.trim();
+            if (!text) return;
+            await storage.save(d => { d.coupons.available.unshift(text); return d; });
+            input.value = "";
+            render();
+        });
+
+        el("#draw").addEventListener("click", async () => {
+            const data = await storage.load();
+            const a = data.coupons.available;
+            if (a.length === 0) { result.textContent = "Keine Gutscheine mehr – bitte neue hinzufügen 💙"; return; }
+            const idx = Math.floor(Math.random() * a.length);
+            const choice = a[idx];
+            result.textContent = choice;
+        });
+
+        render();
+    </script>
+</body>
+</html>

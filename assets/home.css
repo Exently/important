@@ -1,0 +1,20 @@
+.grid {
+    display: grid;
+    gap: 1rem
+}
+
+.grid.menu {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))
+}
+
+.menu .card {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    align-items: flex-start;
+    min-height: 120px
+}
+
+.menu .card strong {
+    font-size: 1.05rem
+}

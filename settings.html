@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Einstellungen • Für dich</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="assets/base.css" />
+    <link rel="stylesheet" href="assets/settings.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div id="nav" class="nav"></div>
+
+        <div class="card">
+            <div class="badge">Daten teilen / übertragen</div>
+            <p class="small">
+                Deine Daten werden lokal im Browser gespeichert. Für ein anderes Gerät:
+                <strong>Code erzeugen</strong> → auf dem anderen Gerät in <strong>Code einfügen</strong> einsetzen.
+            </p>
+
+            <div class="grid" style="grid-template-columns:1fr">
+                <div class="row">
+                    <button id="btnExport">Code erzeugen</button>
+                    <input id="share" placeholder="Code erscheint hier …" style="flex:1" />
+                    <button id="btnCopy">Kopieren</button>
+                </div>
+                <div class="row">
+                    <input id="import" placeholder="Code hier einfügen …" style="flex:1" />
+                    <button id="btnImport">Importieren</button>
+                </div>
+            </div>
+
+            <div class="space"></div>
+            <div class="row">
+                <button id="btnReset" style="background:linear-gradient(90deg,#ff8aa8,#ff5d84)">Alles
+                    zurücksetzen</button>
+                <div class="small" id="status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { mountNav, el } from "./js/common.js";
+        import { storage } from "./js/storage.js";
+        mountNav("settings");
+
+        el("#btnExport").addEventListener("click", async () => {
+            const code = await storage.export();
+            el("#share").value = code;
+            el("#status").textContent = "Code erstellt. Auf anderem Gerät unter „Code einfügen“ importieren.";
+        });
+        el("#btnCopy").addEventListener("click", async () => {
+            const v = el("#share").value;
+            if (!v) return;
+            await navigator.clipboard.writeText(v);
+            el("#status").textContent = "In Zwischenablage kopiert.";
+        });
+        el("#btnImport").addEventListener("click", async () => {
+            const code = el("#import").value.trim();
+            if (!code) return;
+            try {
+                await storage.import(code);
+                el("#status").textContent = "Import erfolgreich! Seite neu laden, um alles zu sehen.";
+            } catch (e) {
+                el("#status").textContent = "Import fehlgeschlagen. Ist der Code korrekt?";
+            }
+        });
+        el("#btnReset").addEventListener("click", async () => {
+            if (!confirm("Wirklich alles löschen?")) return;
+            await storage.clear();
+            el("#status").textContent = "Zurückgesetzt.";
+        });
+    </script>
+</body>
+</html>

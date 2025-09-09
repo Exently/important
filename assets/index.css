@@ -1,0 +1,18 @@
+.center {
+    display: flex;
+    min-height: 100dvh;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem
+}
+
+.counter {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: .5px
+}
+
+#go {
+    margin-top: .5rem
+}

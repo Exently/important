@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Home • Für dich</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="assets/style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div id="nav" class="nav"></div>
+        <div class="grid menu">
+            <a class="card" href="gallery.html">
+                <div class="badge">Galerie</div>
+                <div><strong>Momente & Links</strong>
+                    <div class="small">Wird noch implementiert</div>
+                </div>
+            </a>
+            <a class="card" href="todos.html">
+                <div class="badge">To-Dos</div>
+                <div><strong>Kleine gemeinsame Pläne</strong>
+                    <div class="small"></div>
+                </div>
+            </a>
+            <a class="card" href="coupons.html">
+                <div class="badge">Gutscheine</div>
+                <div><strong>Zufällige Überraschung</strong>
+                    <div class="small">Wird noch implementiert</div>
+                </div>
+            </a>
+            <a class="card" href="settings.html">
+                <div class="badge">Einstellungen</div>
+                <div><strong>Sync</strong>
+                    <div class="small">Sync über Token, damit wir beide den gleichen Stand haben <3</div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <script type="module">
+        import { mountNav } from "./js/common.js";
+        mountNav("home");
+    </script>
+</body>
+<link rel="stylesheet" href="assets/base.css" />
+<link rel="stylesheet" href="assets/home.css" />
+
+</html>

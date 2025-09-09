@@ -1,0 +1,63 @@
+.stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center
+}
+
+#couponText {
+    width: 80%;
+    font-size: 1rem;
+    padding-right: 1rem;
+    color: var(--text);
+    outline: none
+}
+
+.counter {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: .5px;
+    min-height: 2.2em
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    padding: .4rem .8rem;
+    box-shadow: var(--shadow)
+}
+
+.lists {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr
+}
+
+@media (max-width:760px) {
+    .lists {
+        grid-template-columns: 1fr
+    }
+}
+
+.list-col .row {
+    margin: .3rem 0
+}
+
+.list-col .row button {
+    margin-left: .5rem
+}
+
+.draw-btn {
+    font-size: 1rem
+}
+
+.use-btn {
+    background: linear-gradient(90deg, #7dd56f, #20b26b)
+}
+
+.undo-btn {
+    background: linear-gradient(90deg, #ffd166, #f9a602)
+}
